@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greedy Snake</title>
+    <style>
+        #canvas {
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+        let speed = 200,
+            snake = [ 42, 41 ],
+            food = 43, 
+            direction = 'right',
+            keycodeMap = { 37: 'left', 38: 'up', 39: 'right', 40: 'down' },
+            step = 1,
+            stepMap = { left: -1, up: -20, right: 1, down: 20 },
+            ctx = document.getElementById('canvas').getContext('2d');
+
+        document.addEventListener('keydown', (e) => {
+            const { keyCode } = e
+            let direction =  keycodeMap[keyCode]
+            step = direction ? stepMap[direction] : step
+        })
+
+        let draw = (position, color) => {
+            ctx.fillStyle = color;
+            ctx.fillRect( position % 20 * 20 + 1, Math.floor(position / 20) * 20 + 1, 18, 18 )
+        }
+
+        let createFood = () => {
+            return food = Math.floor(Math.random() * 400)
+        }
+
+        let task = () => {
+            snake.unshift(snake[0] + step)
+            let current = snake[0]
+            draw(current, 'green')
+            if(current === food) {
+                while(snake.indexOf(food = createFood()) != -1) {}
+                draw(food, 'yellow')
+            } else {
+                draw(snake.pop(), 'black')
+            }
+        }
+
+        setInterval(task, speed)
+    </script>
+</body>
+</html>
