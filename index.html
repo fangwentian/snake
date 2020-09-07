@@ -11,15 +11,15 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="400" height="400"></canvas>
+    <canvas id="canvas" width="800" height="800"></canvas>
     <script>
-        let speed = 200,
+        let speed = 100,
             snake = [ 42, 41 ],
             food = 43, 
             direction = 'right',
             keycodeMap = { 37: 'left', 38: 'up', 39: 'right', 40: 'down' },
             step = 1,
-            stepMap = { left: -1, up: -20, right: 1, down: 20 },
+            stepMap = { left: -1, up: -40, right: 1, down: 40 },
             ctx = document.getElementById('canvas').getContext('2d');
 
         document.addEventListener('keydown', (e) => {
@@ -28,20 +28,38 @@
             step = direction ? stepMap[direction] : step
         })
 
+        // 800 * 800的画布，横向纵向是 800/20 = 40个格子
         let draw = (position, color) => {
             ctx.fillStyle = color;
-            ctx.fillRect( position % 20 * 20 + 1, Math.floor(position / 20) * 20 + 1, 18, 18 )
+            ctx.fillRect( position % 40 * 20 + 1, Math.floor(position / 40) * 20 + 1, 18, 18 )
         }
 
         let createFood = () => {
-            return food = Math.floor(Math.random() * 400)
+            return food = Math.floor(Math.random() * 1600)
+        }
+
+        let isDead = (next) => {
+            if(
+                next < 0 ||
+                next > 1600 ||
+                snake.indexOf(next, 1) != -1 ||
+                step == 1 && next % 40 === 0 ||
+                step == -1 && next % 40 === 39
+            ) {
+                return true
+            }
+            return false
         }
 
         let task = () => {
             snake.unshift(snake[0] + step)
-            let current = snake[0]
-            draw(current, 'green')
-            if(current === food) {
+            let next = snake[0]
+            if(isDead(next)) {
+                alert('Game Over')
+            }
+            draw(next, 'green')
+
+            if(next === food) {
                 while(snake.indexOf(food = createFood()) != -1) {}
                 draw(food, 'yellow')
             } else {
