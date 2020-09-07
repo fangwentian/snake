@@ -28,7 +28,7 @@
             step = direction ? stepMap[direction] : step
         })
 
-        // 800 * 800的画布，横向纵向是 800/20 = 40个格子
+        // 800 * 800的画布，横向纵向是 800/20 = 40个格子, 总共是0 - 1599个
         let draw = (position, color) => {
             ctx.fillStyle = color;
             ctx.fillRect( position % 40 * 20 + 1, Math.floor(position / 40) * 20 + 1, 18, 18 )
