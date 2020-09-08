@@ -11,16 +11,20 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="800"></canvas>
+    <canvas id="canvas"></canvas>
     <script>
         let speed = 150,
+            width = 30, // 一行/一列 有多少个格子
             snake = [ 42, 41 ],
             food = 43, 
             direction = 'right',
             keycodeMap = { 37: 'left', 38: 'up', 39: 'right', 40: 'down' },
             step = 1,
-            stepMap = { left: -1, up: -40, right: 1, down: 40 },
+            stepMap = { left: -1, up: -width, right: 1, down: width },
             ctx = document.getElementById('canvas').getContext('2d');
+
+        document.getElementById('canvas').width = 20 * width
+        document.getElementById('canvas').height = 20 * width
 
         document.addEventListener('keydown', (e) => {
             const { keyCode } = e
@@ -30,33 +34,32 @@
 
         (function drawLine() {
             ctx.beginPath()
-            for(let i = 1; i < 40; i++) {
+            for(let i = 1; i < width; i++) {
                 ctx.moveTo(i * 20 + 0.5, 0)
                 ctx.lineTo(i * 20 + 0.5, 800)
                 ctx.moveTo(0, i * 20 + 0.5)
-                ctx.lineTo(800, i * 20 + 0.5)
+                ctx.lineTo(20 * width, i * 20 + 0.5)
                 ctx.strokeStyle = 'white'
             }
             ctx.stroke()
         })()
 
-        // 800 * 800的画布，横向纵向是 800/20 = 40个格子, 总共是0 - 1599个
         let draw = (position, color) => {
             ctx.fillStyle = color;
-            ctx.fillRect( position % 40 * 20 + 1.5, Math.floor(position / 40) * 20 + 1.5, 18, 18 )
+            ctx.fillRect( position % width * 20 + 1.5, Math.floor(position / width) * 20 + 1.5, 18, 18 )
         }
 
         let createFood = () => {
-            return food = Math.floor(Math.random() * 1600)
+            return food = Math.floor(Math.random() * width * width)
         }
 
         let isDead = (next) => {
             if(
                 next < 0 ||
-                next > 1600 ||
+                next > (width * width) ||
                 snake.indexOf(next, 1) != -1 ||
-                step == 1 && next % 40 === 0 ||
-                step == -1 && next % 40 === 39
+                step == 1 && next % width === 0 ||
+                step == -1 && next % width === (width - 1)
             ) {
                 return true
             }
